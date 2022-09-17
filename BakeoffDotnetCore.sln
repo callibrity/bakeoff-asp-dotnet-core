@@ -1,0 +1,16 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BakeoffDotnetCore", "BakeoffDotnetCore\BakeoffDotnetCore.csproj", "{CC20BCED-E7F3-4D53-8FED-798D18002811}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{CC20BCED-E7F3-4D53-8FED-798D18002811}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CC20BCED-E7F3-4D53-8FED-798D18002811}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CC20BCED-E7F3-4D53-8FED-798D18002811}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CC20BCED-E7F3-4D53-8FED-798D18002811}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
