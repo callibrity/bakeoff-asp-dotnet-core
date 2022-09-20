@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using BakeoffDotnetCore.Models;
+using Npgsql.Internal.TypeHandlers;
 
 namespace BakeoffDotnetCore.Controllers
 {
@@ -39,30 +40,18 @@ namespace BakeoffDotnetCore.Controllers
         // PUT: api/Artists/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutArtist(string id, Artist artist)
+        public async Task<ActionResult<Artist>> PutArtist(string id, Artist artist)
         {
-            if (id != artist.Id)
+            var persisted = await _context.Artists.FindAsync(id);
+            if (persisted == null)
             {
-                return BadRequest();
+                return NotFound();
             }
+            persisted.Name = artist.Genre;
+            persisted.Genre = artist.Genre;
+            await _context.SaveChangesAsync();
 
-            _context.Entry(artist).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ArtistExists(id))
-                {
-                    return NotFound();
-                }
-
-                throw;
-            }
-
-            return Ok();
+            return Ok(persisted);
         }
 
         // POST: api/Artists
@@ -70,25 +59,10 @@ namespace BakeoffDotnetCore.Controllers
         [HttpPost]
         public async Task<ActionResult<Artist>> PostArtist(Artist artist)
         {
+            artist.Id = System.Guid.NewGuid().ToString();
             _context.Artists.Add(artist);
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException)
-            {
-                if (ArtistExists(artist.Id))
-                {
-                    return Conflict();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
+            await _context.SaveChangesAsync();
             return Ok(artist);
-            // return CreatedAtAction(nameof(GetArtist), new { id = artist.Id }, artist);
         }
 
         // DELETE: api/Artists/5
