@@ -47,7 +47,7 @@ namespace BakeoffDotnetCore.Controllers
             {
                 return NotFound();
             }
-            artist.Name = request.Genre;
+            artist.Name = request.Name;
             artist.Genre = request.Genre;
             _context.Artists.Update(artist);
             await _context.SaveChangesAsync();
