@@ -3,9 +3,9 @@ WORKDIR /app
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
-COPY ["../BakeoffDotnetCore.csproj", "BakeoffDotnetCore/"]
+COPY ["BakeoffDotnetCore/BakeoffDotnetCore.csproj", "BakeoffDotnetCore/"]
 RUN dotnet restore "BakeoffDotnetCore/BakeoffDotnetCore.csproj"
-COPY . ./BakeoffDotnetCore
+COPY ./BakeoffDotnetCore ./BakeoffDotnetCore
 WORKDIR "/src/BakeoffDotnetCore"
 RUN dotnet build "BakeoffDotnetCore.csproj" -c Release -o /app/build
 
