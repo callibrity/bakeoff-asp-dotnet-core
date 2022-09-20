@@ -25,7 +25,7 @@ builder.Services.AddDbContext<ArtistContext>(opt =>
         var dbName = Environment.GetEnvironmentVariable("DB_NAME");
         var dbUser = Environment.GetEnvironmentVariable("DB_USER");
         var dbPass = Environment.GetEnvironmentVariable("DB_PASS");
-        opt.UseNpgsql($"Host={dbHost};Port={dbPort};Database={dbName};Username={dbUser};Password={dbPass};Maximum Pool Size=20");
+        opt.UseNpgsql($"Host={dbHost};Port={dbPort};Database={dbName};Username={dbUser};Password={dbPass};Maximum Pool Size=20;Minimum Pool Size=20");
     }
 });
 
