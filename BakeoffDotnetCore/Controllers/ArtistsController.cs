@@ -40,7 +40,7 @@ namespace BakeoffDotnetCore.Controllers
         // PUT: api/Artists/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<ActionResult<Artist>> PutArtist(string id, CreateArtistRequest request)
+        public async Task<ActionResult<Artist>> PutArtist(string id, UpdateArtistRequest request)
         {
             var artist = await _context.Artists.FindAsync(id);
             if (artist == null)
@@ -59,9 +59,11 @@ namespace BakeoffDotnetCore.Controllers
         [HttpPost]
         public async Task<ActionResult<Artist>> PostArtist(CreateArtistRequest request)
         {
-            Artist artist = new Artist();
-            artist.Name = request.Name;
-            artist.Genre = request.Genre;
+            Artist artist = new Artist
+            {
+                Name = request.Name,
+                Genre = request.Genre
+            };
             _context.Artists.Add(artist);
             await _context.SaveChangesAsync();
             return Ok(artist);
