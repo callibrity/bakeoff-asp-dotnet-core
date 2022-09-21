@@ -6,23 +6,27 @@ namespace BakeoffDotnetCore.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ArtistsController : ControllerBase
+    public class ArtistsController : ControllerBase, IDisposable
     {
-        
+        private readonly ArtistContext _context;
+
+        public ArtistsController(ArtistContext context)
+        {
+            _context = context;
+        }
+
         // GET: api/Artists
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Artist>>> GetArtists()
         {
-            await using var ctx = new ArtistContext();
-            return await ctx.Artists.ToListAsync();
+            return await _context.Artists.ToListAsync();
         }
 
         // GET: api/Artists/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Artist>> GetArtist(string id)
         {
-            await using var ctx = new ArtistContext();
-            var artist = await ctx.Artists.FindAsync(id);
+            var artist = await _context.Artists.FindAsync(id);
 
             if (artist == null)
             {
@@ -37,16 +41,15 @@ namespace BakeoffDotnetCore.Controllers
         [HttpPut("{id}")]
         public async Task<ActionResult<Artist>> PutArtist(string id, UpdateArtistRequest request)
         {
-            await using var ctx = new ArtistContext();
-            var artist =  await ctx.Artists.FindAsync(id);
+            var artist =  await _context.Artists.FindAsync(id);
             if (artist == null)
             {
                 return NotFound();
             }
             artist.Name = request.Name;
             artist.Genre = request.Genre;
-            ctx.Artists.Update(artist);
-            await ctx.SaveChangesAsync();
+            _context.Artists.Update(artist);
+            await _context.SaveChangesAsync();
             return Ok(artist);
         }
 
@@ -55,14 +58,13 @@ namespace BakeoffDotnetCore.Controllers
         [HttpPost]
         public async Task<ActionResult<Artist>> PostArtist(CreateArtistRequest request)
         {
-            await using var ctx = new ArtistContext();
             Artist artist = new Artist
             {
                 Name = request.Name,
                 Genre = request.Genre
             };
-            ctx.Artists.Add(artist);
-            await ctx.SaveChangesAsync();
+            _context.Artists.Add(artist);
+            await _context.SaveChangesAsync();
             return Ok(artist);
         }
 
@@ -70,17 +72,24 @@ namespace BakeoffDotnetCore.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteArtist(string id)
         {
-            await using var ctx = new ArtistContext();
-            var artist = await ctx.Artists.FindAsync(id);
+            var artist = await _context.Artists.FindAsync(id);
             if (artist == null)
             {
                 return NotFound();
             }
 
-            ctx.Artists.Remove(artist);
-            await ctx.SaveChangesAsync();
+            _context.Artists.Remove(artist);
+            await _context.SaveChangesAsync();
 
             return Ok();
+        }
+
+        /**
+         * Implementing IDisposable to force synchronous disposal of DbContext.
+         */
+        public void Dispose()
+        {
+            _context.Dispose();
         }
     }
 }
