@@ -12,16 +12,16 @@
     "BakeoffDotnetCore": {
       "commandName": "Project",
       "dotnetRunMessages": true,
-      "launchBrowser": true,
+      "launchBrowser": false,
       "launchUrl": "api/artists",
       "applicationUrl": "https://localhost:7110;http://localhost:5064",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Production",
         "DB_HOST": "localhost",
         "DB_PORT": "5432",
-        "DB_NAME": "dotnetartists",
-        "DB_USER": "bakeoff",
-        "DB_PASS": "supersecret"
+        "DB_NAME": "postgres",
+        "DB_USER": "postgres",
+        "DB_PASS": "changeme"
       }
     },
     "IIS Express": {
