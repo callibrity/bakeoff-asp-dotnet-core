@@ -1,5 +1,4 @@
 using BakeoffDotnetCore.Models;
-using BakeoffDotnetCore.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -29,8 +28,6 @@ builder.Services.AddDbContext<ArtistContext>(opt =>
         opt.UseNpgsql($"Host={dbHost};Port={dbPort};Database={dbName};Username={dbUser};Password={dbPass};Maximum Pool Size=20;Minimum Pool Size=20");
     }
 });
-
-builder.Services.AddSingleton<IArtistRepository, ArtistRepository>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
