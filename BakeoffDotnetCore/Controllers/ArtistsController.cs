@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using BakeoffDotnetCore.Models;
-using BakeoffDotnetCore.Repositories;
+using Npgsql.Internal.TypeHandlers;
 
 namespace BakeoffDotnetCore.Controllers
 {
@@ -8,25 +9,26 @@ namespace BakeoffDotnetCore.Controllers
     [ApiController]
     public class ArtistsController : ControllerBase
     {
-        private readonly IArtistRepository _artistRepository;
+        private readonly ArtistContext _context;
 
-        public ArtistsController(IArtistRepository artistRepository)
+        public ArtistsController(ArtistContext context)
         {
-            _artistRepository = artistRepository;
+            _context = context;
         }
 
         // GET: api/Artists
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Artist>>> GetArtists()
         {
-            return Ok(await _artistRepository.GetArtists());
+            return await _context.Artists.ToListAsync();
         }
 
         // GET: api/Artists/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Artist>> GetArtist(string id)
         {
-            var artist = await _artistRepository.GetArtist(id);
+            var artist = await _context.Artists.FindAsync(id);
+
             if (artist == null)
             {
                 return NotFound();
@@ -40,7 +42,16 @@ namespace BakeoffDotnetCore.Controllers
         [HttpPut("{id}")]
         public async Task<ActionResult<Artist>> PutArtist(string id, UpdateArtistRequest request)
         {
-            return Ok(await _artistRepository.UpdateArtist(id, request.Name, request.Genre));
+            var artist = await _context.Artists.FindAsync(id);
+            if (artist == null)
+            {
+                return NotFound();
+            }
+            artist.Name = request.Name;
+            artist.Genre = request.Genre;
+            _context.Artists.Update(artist);
+            await _context.SaveChangesAsync();
+            return Ok(artist);
         }
 
         // POST: api/Artists
@@ -48,19 +59,35 @@ namespace BakeoffDotnetCore.Controllers
         [HttpPost]
         public async Task<ActionResult<Artist>> PostArtist(CreateArtistRequest request)
         {
-            return Ok(await _artistRepository.CreateArtist(new Artist()
+            Artist artist = new Artist
             {
                 Name = request.Name,
                 Genre = request.Genre
-            }));
+            };
+            _context.Artists.Add(artist);
+            await _context.SaveChangesAsync();
+            return Ok(artist);
         }
 
         // DELETE: api/Artists/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteArtist(string id)
         {
-            await _artistRepository.DeleteArtist(id);
+            var artist = await _context.Artists.FindAsync(id);
+            if (artist == null)
+            {
+                return NotFound();
+            }
+
+            _context.Artists.Remove(artist);
+            await _context.SaveChangesAsync();
+
             return Ok();
+        }
+
+        private bool ArtistExists(string id)
+        {
+            return (_context.Artists?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }
